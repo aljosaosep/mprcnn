@@ -8,7 +8,7 @@ This repository contains code for the Mask Proposal R-CNN network, as described 
 By [Aljosa Osep](https://www.vision.rwth-aachen.de/person/13/), [Paul Voigtlaender](https://www.vision.rwth-aachen.de/person/197/), [Jonathon Luiten](https://www.vision.rwth-aachen.de/person/216/), Mark Weber, [Bastian Leibe](https://www.vision.rwth-aachen.de/person/1/), Computer Vision Group, RWTH Aachen University
 
 ## Pretrained Models
-* Get them here (TODO link)
+* Get them [here](https://drive.google.com/open?id=1TqoHmBXNXQtNv5GQbJ77_EoUcehgewMg)
 
 ## Prerequisite
 
