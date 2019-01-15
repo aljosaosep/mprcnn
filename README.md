@@ -30,6 +30,12 @@ In order to run the code, your setup has to meet the following minimum requireme
 * Create a folder on your local disk on which models and logs will be stored and link it here under the name train_log:
   * `mkdir -p /work/${USER}/data/tensorpack_models` (or wherever your models are)
   * `ln -s /work/${USER}/data/tensorpack_models/ train_log`
+  
+## Run
+* To use the pre-trained MP R-CNN model trained on COCO dataset, simply run the provided `predict_test.sh`; it will forward all images in `$REPO\sample_images` and store segmentations to `/tmp/proposals_test` (jsons).
+
+## Train
+* TODO
 
 ## Citing
 
