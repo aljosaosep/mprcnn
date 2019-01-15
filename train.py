@@ -42,8 +42,6 @@ from common import print_config
 from eval import (
     eval_on_dataflow, detect_one_image, print_evaluation_scores, DetectionResult, SecondDetectionResult)
 import config
-from forward_proto import forward_protobuf
-
 
 def get_batch_factor():
     nr_gpu = get_nr_gpu()
@@ -534,9 +532,6 @@ def forward(pred_func, output_folder, forward_dataset, generic_images_folder=Non
         # The sequence (if there is any) is assumed to be the folder the images are in
         #seq_idx = -1 - generic_images_pattern.count("/")
         seq_idx = None
-    elif forward_dataset.lower() == "protobuf":
-        forward_protobuf(pred_func, output_folder, forward_dataset, generic_images_folder, generic_images_pattern)
-        return
     else:
         assert False, ("Unknown dataset", forward_dataset)
     tf.gfile.MakeDirs(output_folder)
