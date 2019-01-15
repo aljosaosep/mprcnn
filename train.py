@@ -306,9 +306,6 @@ class Model(ModelDesc):
                                                    name='secondclassification_all_probs')  # #proposal x #Class
                 second_final_posterior = tf.gather(second_label_probs, pred_indices_only_boxes,
                                                    name='second_final_posterior')
-
-                # second_final_labels = tf.add(tf.argmax(final_posterior, -1), 1, name='second_final_labels')
-                # bugfix (?): I think it should be second_final_posterior
                 second_final_labels = tf.add(tf.argmax(second_final_posterior, -1), 1, name='second_final_labels')
             if config.MODE_MASK:
                 # HACK to work around https://github.com/tensorflow/tensorflow/issues/14657
@@ -452,26 +449,7 @@ def convert_results_to_json(results, img_idx):
                 'posterior': list(map(lambda x: round(float(x), round_posterior), r.posterior.tolist())), #r.posterior.tolist(),
                 'second_category_id': second_cat_id,
                 'second_posterior': compressed_post,
-                #'second_posterior': r.second_posterior.tolist()
-                #'second_posterior': list(map(lambda x: round(float(x), round_posterior), r.second_posterior.tolist()))
             }
-
-            # First
-
-            # print('========================================================')
-            # print('Score: %f' % float(round(r.score, 4)))
-            # print('First: obj prob.: %f' % float(round(r.posterior[1], 4)))
-            # print('First: category id: %d'%cat_id)
-            # print('First: posterior argmax: %d'% np.argmax(r.posterior))
-            # print('------------------------------')
-            #
-            # # Second
-            # second_argmax = np.argmax(r.second_posterior)
-            # print('Second: category id: %d'%second_cat_id)
-            # print('Second: argmax score: %f' % float(round(r.second_posterior[second_argmax], 4)))
-            # print('Second: posterior argmax: %d'% second_argmax)
-            # print('Second: cat name: %s' % COCOMeta.second_cat_names[second_argmax]) #second_cat_id])
-            # print('------------------------------')
 
         else:
             res = {
@@ -482,13 +460,6 @@ def convert_results_to_json(results, img_idx):
                 'posterior': list(map(lambda x: round(float(x), round_posterior), r.posterior)),
             }
 
-        # if config.EXTRACT_FEATURES:
-        #     # TODO: we need to write it out in a different way! this is too large (33MB for 1 image with 1000 proposals)
-        #     res["features"] = [round(float(x), round_feats) for x in r.feature_fastrcnn_pooled]
-        # also append segmentation to results
-
-        #print ('FEAT VEC DIM:')
-        #print (r.feature_fastrcnn_pooled.shape)
         if r.mask is not None:
             import pycocotools.mask as cocomask
             rle = cocomask.encode(np.array(r.mask[:, :, None], order='F'))[0]
@@ -522,15 +493,6 @@ def forward(pred_func, output_folder, forward_dataset, generic_images_folder=Non
         imgs = sorted(glob.glob(os.path.join(generic_images_folder, generic_images_pattern)))
 
         print ("Num. images: %d"%len(imgs))
-
-        # filter to subset
-        # Aljosa: wtf?
-        # imgs = [im for im in imgs if int(im.split("/")[-1].split("_")[-1].replace("frames", "").replace(".png", "")) in range(53475, 54000)]
-
-        # print ("Num. images, filtered: %d"%len(imgs))
-
-        # The sequence (if there is any) is assumed to be the folder the images are in
-        #seq_idx = -1 - generic_images_pattern.count("/")
         seq_idx = None
     else:
         assert False, ("Unknown dataset", forward_dataset)
@@ -569,7 +531,6 @@ def forward(pred_func, output_folder, forward_dataset, generic_images_folder=Non
             t0_det = time.time()
             results = detect_one_image(img_val, pred_func)
             t1_det = time.time()
-            #print('Inference time: %f s'%(t1_det-t0_det))
         print(len(results))
 
         # store visualization (slow + optional)
@@ -591,22 +552,12 @@ def forward(pred_func, output_folder, forward_dataset, generic_images_folder=Non
 
         M_emb = convert_embeddings_to_binary(results)
 
-        # # Write feat. embeddings to file
-        # t0_npz = time.time()
-        # np.savez(output_filename_embeddings, M_emb.astype(np.float16))
-        # t1_npz = time.time()
-        # print('Npz storage time: %f s' % (t1_npz - t0_npz))
-
         t0_cmp_npz = time.time()
         np.savez_compressed(output_filename_embeddings, a=M_emb.astype(np.float16))
         t1_cmp_npz = time.time()
-        #print('Npz compressed storage time: %f s' % (t1_cmp_npz - t0_cmp_npz))
-
 
     t1 = time.time()
     time_elapsed = t1 - t0
-    #print("Processing time for %d frames: %f s"%(n_total, time_elapsed))
-    #print("Per-frame: %f s "%(time_elapsed / n_total))
 
 def predict(pred_func, input_file):
     img = cv2.imread(input_file, cv2.IMREAD_COLOR)
