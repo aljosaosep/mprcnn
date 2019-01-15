@@ -13,8 +13,8 @@ By [Aljosa Osep](https://www.vision.rwth-aachen.de/person/13/), [Paul Voigtlaend
 ## Prerequisite
 
 In order to run the code, your setup has to meet the following minimum requirements (tested versions in parentheses. Other versions might work, too):
-* Python TODO
-* Tensorflow TODO
+* Python 3.5.5
+* Tensorflow 1.9.0 (note: won't work with CPU version)
 * Additional dependencies (get using conda install / pip install / ...): `termcolor, tqdm, tabulate, opencv-python, msgpack_numpy, scipy, pillow`
 * [Pycocotools](https://github.com/cocodataset/cocoapi/tree/master/PythonAPI/pycocotools) (need to add to PYTHONPATH)
 
